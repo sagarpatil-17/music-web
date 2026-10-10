@@ -1,0 +1,91 @@
+<aside
+  class="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col
+         border-r border-white/5 bg-[#090909] p-5 md:flex"
+>
+  <a routerLink="/" class="mb-10 flex items-center gap-3 px-2">
+    <div
+      class="flex h-10 w-10 items-center justify-center
+             rounded-xl bg-cyan-400 text-xl font-black text-black"
+    >
+      S
+    </div>
+
+    <span class="text-2xl font-bold tracking-tight">
+      sonic<span class="text-cyan-400">.</span>
+    </span>
+  </a>
+
+  <p class="mb-3 px-3 text-xs font-bold uppercase tracking-[0.2em] text-gray-500">
+    Menu
+  </p>
+
+  <nav class="space-y-2">
+    <a
+      routerLink="/"
+      [routerLinkActiveOptions]="{ exact: true }"
+      routerLinkActive="bg-white/10 text-white"
+      class="sidebar-link"
+    >
+      <span>⌂</span> Home
+    </a>
+
+    <a
+      routerLink="/search"
+      routerLinkActive="bg-white/10 text-white"
+      class="sidebar-link"
+    >
+      <span>⌕</span> Search
+    </a>
+
+    <a
+      routerLink="/library"
+      routerLinkActive="bg-white/10 text-white"
+      class="sidebar-link"
+    >
+      <span>▤</span> Your Library
+    </a>
+  </nav>
+
+  <div class="my-7 border-t border-white/10"></div>
+
+  <p class="mb-3 px-3 text-xs font-bold uppercase tracking-[0.2em] text-gray-500">
+    Your collection
+  </p>
+
+  <nav class="space-y-1">
+    <a routerLink="/library" class="sidebar-link">
+      ♡ Liked Songs
+    </a>
+
+    <a routerLink="/library" class="sidebar-link">
+      Chill Mix
+    </a>
+
+    <a routerLink="/library" class="sidebar-link">
+      Late Night Focus
+    </a>
+
+    <a routerLink="/library" class="sidebar-link">
+      Daily Discoveries
+    </a>
+  </nav>
+
+  <div
+    class="mt-auto rounded-2xl border border-white/10
+           bg-gradient-to-br from-[#182c32] to-[#171717] p-4"
+  >
+    <p class="font-semibold">Your music, your mood.</p>
+
+    <p class="mt-2 text-xs leading-5 text-gray-400">
+      Discover your next favourite track.
+    </p>
+
+    <a
+      routerLink="/search"
+      class="mt-4 inline-flex rounded-full bg-cyan-400
+             px-4 py-2 text-xs font-bold text-black"
+    >
+      Explore music
+    </a>
+  </div>
+</aside>

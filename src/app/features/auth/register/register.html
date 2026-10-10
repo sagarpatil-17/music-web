@@ -1,0 +1,246 @@
+<main class="auth-page min-h-screen bg-[#090a09] px-4 py-5
+         text-white sm:px-6 sm:py-8 lg:px-8">
+  <div class="mx-auto grid min-h-[calc(100vh-2.5rem)] max-w-7xl
+           grid-cols-1 gap-5 lg:min-h-[calc(100vh-4rem)]
+           lg:grid-cols-[1fr_0.92fr]">
+    <!-- Left: Branding -->
+    <app-auth-brand mode="register" />
+
+    <!-- Right: Registration form -->
+    <section class="flex items-center justify-center rounded-3xl
+             border border-white/[0.07] bg-[#101110]
+             px-5 py-9 sm:px-10 lg:px-14">
+      <div class="w-full max-w-md">
+        <div class="mb-7">
+          <div class="mb-5 inline-flex items-center gap-2 rounded-full
+                   border border-lime-300/15 bg-lime-300/[0.06]
+                   px-3 py-1.5 text-xs text-lime-200">
+            <span class="h-1.5 w-1.5 rounded-full bg-lime-300"></span>
+            JOIN THE FRESH MUSIC COMMUNITY
+          </div>
+
+          <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">
+            Create your account
+          </h1>
+
+          <p class="mt-3 text-sm leading-6 text-neutral-400">
+            A few details, then you're ready to press play.
+          </p>
+        </div>
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate class="space-y-4">
+          <!-- Full name -->
+          <div>
+            <label for="register-name" class="mb-2 block text-sm font-medium text-neutral-200">
+              Full name
+            </label>
+
+            <div class="auth-input-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                class="h-5 w-5 shrink-0 text-neutral-500" aria-hidden="true">
+                <circle cx="12" cy="8" r="4"></circle>
+                <path d="M4 21a8 8 0 0 1 16 0"></path>
+              </svg>
+
+              <input id="register-name" type="text" formControlName="name" autocomplete="name"
+                placeholder="Enter your name" class="auth-input" [class.auth-input-invalid]="
+                  name.invalid && (name.touched || submitted)
+                " />
+            </div>
+
+            @if (
+            name.hasError('required') &&
+            (name.touched || submitted)
+            ) {
+            <p class="auth-error">Your name is required.</p>
+            } @else if (
+            name.hasError('minlength') &&
+            (name.touched || submitted)
+            ) {
+            <p class="auth-error">
+              Name must contain at least 2 characters.
+            </p>
+            } @else if (
+            name.hasError('maxlength') &&
+            (name.touched || submitted)
+            ) {
+            <p class="auth-error">
+              Name cannot exceed 60 characters.
+            </p>
+            }
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label for="register-email" class="mb-2 block text-sm font-medium text-neutral-200">
+              Email address
+            </label>
+
+            <div class="auth-input-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                class="h-5 w-5 shrink-0 text-neutral-500" aria-hidden="true">
+                <rect x="3" y="5" width="18" height="14" rx="3"></rect>
+                <path d="m4 7 8 6 8-6"></path>
+              </svg>
+
+              <input id="register-email" type="email" formControlName="email" autocomplete="email"
+                placeholder="you@example.com" class="auth-input" [class.auth-input-invalid]="
+                  email.invalid && (email.touched || submitted)
+                " />
+            </div>
+
+            @if (
+            email.hasError('required') &&
+            (email.touched || submitted)
+            ) {
+            <p class="auth-error">Email address is required.</p>
+            } @else if (
+            email.hasError('email') &&
+            (email.touched || submitted)
+            ) {
+            <p class="auth-error">Enter a valid email address.</p>
+            }
+          </div>
+
+          <!-- Password -->
+          <div>
+            <div class="mb-2 flex items-center justify-between gap-3">
+              <label for="register-password" class="text-sm font-medium text-neutral-200">
+                Password
+              </label>
+
+              <button type="button" class="text-xs font-medium text-lime-300
+                       transition hover:text-lime-200" (click)="togglePassword()" [attr.aria-pressed]="showPassword">
+                {{ showPassword ? 'Hide' : 'Show' }}
+              </button>
+            </div>
+
+            <div class="auth-input-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                class="h-5 w-5 shrink-0 text-neutral-500" aria-hidden="true">
+                <rect x="4" y="10" width="16" height="11" rx="3"></rect>
+                <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+              </svg>
+
+              <input id="register-password" [type]="showPassword ? 'text' : 'password'" formControlName="password"
+                autocomplete="new-password" placeholder="At least 4 characters" class="auth-input"
+                [class.auth-input-invalid]="
+                  password.invalid && (password.touched || submitted)
+                " />
+            </div>
+
+            @if (
+            password.hasError('required') &&
+            (password.touched || submitted)
+            ) {
+            <p class="auth-error">Password is required.</p>
+            } @else if (
+            password.hasError('minlength') &&
+            (password.touched || submitted)
+            ) {
+            <p class="auth-error">
+              Use at least 4 characters.
+            </p>
+            } @else if (
+            password.hasError('maxlength') &&
+            (password.touched || submitted)
+            ) {
+            <p class="auth-error">
+              Password cannot exceed 72 characters.
+            </p>
+            } @else if (
+            password.hasError('pattern') &&
+            (password.touched || submitted)
+            ) {
+            <p class="auth-error">
+              Include at least one letter and one number.
+            </p>
+            }
+          </div>
+
+          <!-- Confirm password -->
+          <div>
+            <div class="mb-2 flex items-center justify-between gap-3">
+              <label for="register-confirm-password" class="text-sm font-medium text-neutral-200">
+                Confirm password
+              </label>
+
+              <button type="button" class="text-xs font-medium text-lime-300
+                       transition hover:text-lime-200" (click)="toggleConfirmPassword()"
+                [attr.aria-pressed]="showConfirmPassword">
+                {{ showConfirmPassword ? 'Hide' : 'Show' }}
+              </button>
+            </div>
+
+            <div class="auth-input-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                class="h-5 w-5 shrink-0 text-neutral-500" aria-hidden="true">
+                <rect x="4" y="10" width="16" height="11" rx="3"></rect>
+                <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+              </svg>
+
+              <input id="register-confirm-password" [type]="showConfirmPassword ? 'text' : 'password'"
+                formControlName="confirmPassword" autocomplete="new-password" placeholder="Enter your password again"
+                class="auth-input" [class.auth-input-invalid]="
+                  (confirmPassword.invalid ||
+                    registerForm.hasError('passwordMismatch')) &&
+                  (confirmPassword.touched || submitted)
+                " />
+            </div>
+
+            @if (
+            confirmPassword.hasError('required') &&
+            (confirmPassword.touched || submitted)
+            ) {
+            <p class="auth-error">Please confirm your password.</p>
+            } @else if (
+            registerForm.hasError('passwordMismatch') &&
+            (confirmPassword.touched || submitted)
+            ) {
+            <p class="auth-error">Passwords do not match.</p>
+            }
+          </div>
+
+          <!-- Terms -->
+          <div class="pt-1">
+            <label for="register-terms" class="flex cursor-pointer items-start gap-3">
+              <input id="register-terms" type="checkbox" formControlName="acceptTerms"
+                class="mt-1 h-4 w-4 shrink-0 cursor-pointer accent-lime-300" />
+
+              <span class="text-xs leading-5 text-neutral-400">
+                I agree to the
+                <a class="font-medium text-lime-300 hover:text-lime-200">
+                  Terms of Service
+                </a>
+                and
+                <a class="font-medium text-lime-300 hover:text-lime-200">
+                  Privacy Policy
+                </a>.
+              </span>
+            </label>
+
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" class="auth-submit group mt-2 flex w-full items-center
+                   justify-center gap-2 rounded-xl px-5 py-3.5
+                   text-sm font-bold">
+            {{ loading ? 'Creating account...' : 'Create account' }}
+          </button>
+        </form>
+
+        <p class="mt-7 text-center text-sm text-neutral-400">
+          Already have an account?
+          <a routerLink="/login" class="ml-1 font-semibold text-lime-300
+                   transition hover:text-lime-200">
+            Sign in
+          </a>
+        </p>
+
+        <p class="mt-8 text-center text-xs leading-5 text-neutral-600">
+          Your account is your gateway to your personal music library.
+        </p>
+      </div>
+    </section>
+  </div>
+</main>
