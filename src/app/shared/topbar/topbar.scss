@@ -1,0 +1,12 @@
+.nav-circle {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  background: rgb(0 0 0 / 50%);
+  color: #d1d5db;
+  font-size: 1.25rem;
+
+  &:hover {
+    background: rgb(255 255 255 / 10%);
+  }
+}
