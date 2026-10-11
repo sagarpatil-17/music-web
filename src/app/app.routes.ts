@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
   {
@@ -19,6 +20,37 @@ export const routes: Routes = [
       import('./features/auth/register/register').then(
         (m) => m.Register
       ),
+  },
+  {
+    path: 'admin',
+    canActivate: [adminGuard],
+    loadComponent: () =>
+      import('./features/admin/admin-layout/admin-layout').then(
+        (m) => m.AdminLayout
+      ),
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        loadComponent: () =>
+          import('./features/admin/dashboard/dashboard').then(
+            (m) => m.Dashboard
+          ),
+      },
+      {
+        path: 'songs',
+        loadComponent: () =>
+          import('./features/admin/songs/songs').then(
+            (m) => m.Songs
+          ),
+      },
+      {
+        path: 'albums',
+        loadComponent: () =>
+          import('./features/admin/albums/albums')
+            .then((m) => m.Albums),
+      }
+    ],
   },
   {
     path: '**',

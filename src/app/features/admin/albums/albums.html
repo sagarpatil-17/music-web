@@ -1,1 +1,191 @@
-<p>albums works!</p>
+<div class="min-h-screen bg-[#09090b] p-5 text-white md:p-8">
+
+    <!-- Header -->
+    <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+        <div>
+            <p class="mb-2 text-xs font-bold uppercase tracking-[0.25em] text-lime-400">
+                Music management
+            </p>
+            <h1 class="text-3xl font-bold">Albums</h1>
+            <p class="mt-2 text-sm text-zinc-400">
+                Manage your albums and published tracks.
+            </p>
+        </div>
+
+        <button type="button" (click)="openCreateForm()"
+            class="rounded-xl bg-lime-400 px-5 py-3 font-semibold text-black transition hover:bg-lime-300">
+            + Create Album
+        </button>
+    </div>
+
+    <!-- Search -->
+    <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <!-- 1. Use unidirectional binding and input events to update the search signal cleanly -->
+        <input type="search" [value]="searchTerm()" (input)="updateSearchTerm($any($event.target).value)" placeholder="Search albums..."
+            class="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm outline-none focus:border-lime-400 sm:max-w-md" />
+
+        <span class="text-sm text-zinc-400">
+            {{ filteredAlbums().length }} albums
+        </span>
+    </div>
+
+    <!-- Loading -->
+    @if (loading()) {
+    <div class="rounded-2xl border border-zinc-800 bg-zinc-900 p-12 text-center">
+        <div class="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-zinc-700 border-t-lime-400"></div>
+        <p class="text-sm text-zinc-400">Loading albums...</p>
+    </div>
+    }
+
+    <!-- Error -->
+    @else if (errorMessage()) {
+    <div class="rounded-xl border border-red-900 bg-red-950/30 p-5">
+        <p class="text-sm text-red-300">{{ errorMessage() }}</p>
+        <button type="button" (click)="refreshAlbums()" class="mt-3 text-sm font-semibold text-lime-400">
+            Retry
+        </button>
+    </div>
+    }
+
+    <!-- Empty -->
+    @else if (filteredAlbums().length === 0) {
+    <div class="rounded-2xl border border-zinc-800 bg-zinc-900/60 px-5 py-16 text-center">
+        <div class="mb-4 text-4xl text-lime-400">♫</div>
+        <h2 class="text-lg font-semibold">
+            {{ searchTerm() ? 'No matching albums' : 'No albums yet' }}
+        </h2>
+        <p class="mt-2 text-sm text-zinc-400">
+            {{ searchTerm() ? 'Try another search.' : 'Create your first album to get started.' }}
+        </p>
+    </div>
+    }
+
+    <!-- Album cards -->
+    @else {
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        @for (album of filteredAlbums(); track album.id) {
+        <article
+            class="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/70 transition hover:border-lime-400/40">
+
+            <!-- Cover placeholder -->
+            <div
+                class="relative flex aspect-square items-center justify-center overflow-hidden bg-gradient-to-br from-zinc-800 to-zinc-950">
+                <span class="text-6xl text-lime-400">♫</span>
+
+                <span
+                    class="absolute left-3 top-3 rounded-lg border border-white/10 bg-black/60 px-3 py-1 text-xs text-lime-300">
+                    ALBUM
+                </span>
+            </div>
+
+            <div class="p-4">
+                <h2 class="truncate text-lg font-semibold">
+                    {{ album.title }}
+                </h2>
+
+                <p class="mt-2 min-h-10 text-sm text-zinc-400">
+                    {{ album.description || 'No description provided.' }}
+                </p>
+
+                <div class="mt-4 flex items-center justify-between border-t border-zinc-800 pt-4">
+                    <span class="text-xs text-zinc-400">
+                        {{ getSongCount(album) }} published songs
+                    </span>
+
+                    <span class="text-xs text-zinc-500">
+                        {{ album.createdAt ? (album.createdAt | date:'mediumDate') : '' }}
+                    </span>
+                </div>
+
+                <div class="mt-4 grid grid-cols-3 gap-2">
+                    <button type="button" (click)="viewAlbum(album)"
+                        class="rounded-lg border border-zinc-700 px-2 py-2 text-xs hover:border-lime-400 hover:text-lime-300">
+                        View
+                    </button>
+
+                    <button type="button" (click)="openEditForm(album)"
+                        class="rounded-lg border border-zinc-700 px-2 py-2 text-xs hover:border-lime-400 hover:text-lime-300">
+                        Edit
+                    </button>
+
+                    <button type="button" (click)="archiveAlbum(album)" [disabled]="archivingId() === album.id"
+                        class="rounded-lg border border-red-900/70 px-2 py-2 text-xs text-red-300 hover:bg-red-950/50 disabled:opacity-50">
+                        {{ archivingId() === album.id ? 'Wait...' : 'Archive' }}
+                    </button>
+                </div>
+            </div>
+        </article>
+        }
+    </div>
+    }
+</div>
+
+<!-- Create / Edit modal -->
+@if (showForm()) {
+<div class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/80 p-4 backdrop-blur-sm">
+    <div class="my-auto w-full max-w-xl rounded-2xl border border-zinc-800 bg-[#111113] shadow-2xl">
+
+        <div class="flex items-center justify-between border-b border-zinc-800 p-5">
+            <div>
+                <h2 class="text-xl font-bold">
+                    {{ isEditMode() ? 'Edit Album' : 'Create Album' }}
+                </h2>
+                <p class="mt-1 text-sm text-zinc-400">
+                    Enter your album information.
+                </p>
+            </div>
+
+            <button type="button" (click)="closeForm()" [disabled]="saving()" aria-label="Close form"
+                class="rounded-lg px-3 py-2 text-xl text-zinc-400 hover:bg-zinc-800 hover:text-white disabled:opacity-50">
+                &times;
+            </button>
+        </div>
+
+        <form (ngSubmit)="saveAlbum()" #albumForm="ngForm" class="space-y-5 p-5">
+
+            <!-- Title -->
+            <div>
+                <label for="albumTitle" class="mb-2 block text-sm font-medium text-zinc-300">
+                    Album title <span class="text-red-400">*</span>
+                </label>
+                <!-- 2. For forms, pass values using form().property syntax -->
+                <input id="albumTitle" name="title" [ngModel]="form().title" (ngModelChange)="form.set({...form(), title: $event})" required maxlength="150"
+                    #titleInput="ngModel" placeholder="Enter album title"
+                    class="w-full rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-sm outline-none focus:border-lime-400" />
+                @if (titleInput.invalid && titleInput.touched) {
+                <p class="mt-1 text-xs text-red-400">Album title is required.</p>
+                }
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label for="albumDescription" class="mb-2 block text-sm font-medium text-zinc-300">
+                    Description
+                </label>
+                <textarea id="albumDescription" name="description" [ngModel]="form().description" (ngModelChange)="form.set({...form(), description: $event})" rows="3"
+                    placeholder="Write a short description..."
+                    class="w-full resize-y rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-sm outline-none focus:border-lime-400"></textarea>
+            </div>
+
+            <!-- Footer -->
+            <div class="flex flex-col-reverse gap-3 border-t border-zinc-800 pt-5 sm:flex-row sm:justify-end">
+                <button type="button" (click)="closeForm()" [disabled]="saving()"
+                    class="rounded-xl border border-zinc-700 px-5 py-3 text-sm font-semibold text-zinc-300 hover:bg-zinc-800 disabled:opacity-50">
+                    Cancel
+                </button>
+
+                <button type="submit" [disabled]="saving() || albumForm.invalid"
+                    class="rounded-xl bg-lime-400 px-6 py-3 text-sm font-bold text-black hover:bg-lime-300 disabled:cursor-not-allowed disabled:opacity-50">
+                    {{
+                    saving()
+                    ? 'Saving...'
+                    : isEditMode()
+                    ? 'Update Album'
+                    : 'Create Album'
+                    }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+}

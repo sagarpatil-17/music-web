@@ -1,23 +1,19 @@
 
-export type AlbumType = 'SINGLE' | 'EP' | 'ALBUM';
+export interface AlbumSong {
+  id: string;
+  title: string;
+  status?: string;
+}
 
 export interface Album {
   id: string;
   title: string;
   description?: string | null;
-  artistId: string;
-  coverImagePath?: string | null;
-  albumType: AlbumType;
-  releaseDate?: string | null;
-  songs?: SongSummary[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  songs?: AlbumSong[];
 }
 
-export interface SongSummary {
-  id: string;
+export interface AlbumPayload {
   title: string;
-  artists: string[];
-  audioPath: string;
-  status: string;
+  description?: string;
 }

@@ -1,1 +1,132 @@
-<p>dashboard works!</p>
+<div class="space-y-8">
+
+  <!-- Welcome -->
+  <section class="relative overflow-hidden rounded-3xl
+           border border-lime-300/15
+           bg-gradient-to-br from-[#19200f]
+           via-[#11140e] to-[#101110] p-6 sm:p-9">
+    <div class="relative z-10 max-w-2xl">
+      <span class="inline-flex rounded-full border
+               border-lime-300/20 bg-lime-300/10
+               px-3 py-1.5 text-xs font-semibold
+               text-lime-200">
+        ADMIN WORKSPACE
+      </span>
+
+      <h1 class="mt-5 text-3xl font-semibold
+               tracking-tight sm:text-4xl">
+        Your music, managed.
+      </h1>
+
+      <p class="mt-3 max-w-lg text-sm leading-6
+                text-neutral-400 sm:text-base">
+        Manage tracks, organize albums, and oversee
+        your Fresh Music platform from one place.
+      </p>
+
+      <a routerLink="/admin/songs" class="mt-7 inline-flex items-center gap-2
+               rounded-xl bg-lime-300 px-5 py-3
+               text-sm font-bold text-[#11130c]
+               transition hover:bg-lime-200">
+        <span>♫</span>
+        Manage songs
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    <div class="pointer-events-none absolute -right-12
+             -top-12 h-64 w-64 rounded-full
+             bg-lime-300/[0.06] blur-3xl"></div>
+  </section>
+
+  <!-- Statistics -->
+  <section>
+    <div class="mb-5">
+      <h2 class="text-lg font-semibold">
+        Platform overview
+      </h2>
+      <p class="mt-1 text-sm text-neutral-500">
+        Your platform statistics will appear here.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 gap-4
+                sm:grid-cols-2 xl:grid-cols-2">
+      @for (stat of stats(); track stat.title) {
+      <a [routerLink]="stat.route" class="dashboard-stat group rounded-2xl
+           border border-white/[0.07]
+           bg-[#101110] p-5 sm:p-6">
+        <div class="flex items-start justify-between">
+          <div class="flex h-11 w-11 items-center
+               justify-center rounded-xl
+               bg-lime-300/[0.08]
+               text-xl text-lime-300">
+            {{ stat.icon }}
+          </div>
+
+          <span class="text-neutral-600 transition
+               group-hover:text-lime-300">
+            ↗
+          </span>
+        </div>
+
+        <p class="mt-6 text-sm text-neutral-400">
+          {{ stat.title }}
+        </p>
+
+        <p class="mt-2 text-3xl font-semibold
+              tracking-tight">
+          {{ stat.value }}
+        </p>
+
+        <p class="mt-2 text-xs text-neutral-500">
+          {{ stat.description }}
+        </p>
+      </a>
+      }
+    </div>
+  </section>
+
+  <!-- Quick actions -->
+  <section>
+    <h2 class="text-lg font-semibold">
+      Quick actions
+    </h2>
+
+    <div class="mt-4 grid grid-cols-1 gap-4
+                sm:grid-cols-2 xl:grid-cols-2">
+
+      <a routerLink="/admin/songs" class="quick-action flex items-center gap-4
+               rounded-2xl border border-white/[0.07]
+               bg-[#101110] p-5">
+        <span class="text-2xl text-lime-300">♫</span>
+        <div>
+          <p class="text-sm font-semibold">
+            Add a song
+          </p>
+          <p class="mt-1 text-xs text-neutral-500">
+            Upload and manage music tracks
+          </p>
+        </div>
+        <span class="ml-auto text-neutral-600">→</span>
+      </a>
+
+      <a routerLink="/admin/albums" class="quick-action flex items-center gap-4
+               rounded-2xl border border-white/[0.07]
+               bg-[#101110] p-5">
+        <span class="text-2xl text-lime-300">◉</span>
+        <div>
+          <p class="text-sm font-semibold">
+            Create an album
+          </p>
+          <p class="mt-1 text-xs text-neutral-500">
+            Organize songs into collections
+          </p>
+        </div>
+        <span class="ml-auto text-neutral-600">→</span>
+      </a>
+
+    </div>
+  </section>
+
+</div>
