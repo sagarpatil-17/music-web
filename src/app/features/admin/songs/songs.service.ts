@@ -9,7 +9,7 @@ import {
     Song,
     UpdateSongPayload,
 } from './songs.model';
-import { environment } from '../../../../environments/environment.development';
+import { environment } from '../../../../environments/environment';
 import { Album } from '../../../core/models/album.model';
 
 @Injectable({
