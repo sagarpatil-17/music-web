@@ -1,0 +1,18 @@
+
+.admin-nav-item {
+  color: #a3a3a3;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease;
+}
+
+.admin-nav-item:hover {
+  color: #ffffff;
+  background: rgb(255 255 255 / 4%);
+}
+
+.admin-nav-item.admin-nav-active {
+  color: #d9f99d;
+  background: rgb(163 230 53 / 9%);
+  box-shadow: inset 2px 0 #a3e635;
+}
