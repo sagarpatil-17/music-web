@@ -35,6 +35,32 @@ export const routes: Routes = [
           import('./features/user/home/home')
             .then(m => m.Home),
       },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/user/profile/profile')
+            .then((m) => m.Profile),
+      },
+
+      {
+        path: 'liked-songs',
+        loadComponent: () =>
+          import('./features/user/liked-songs/liked-songs')
+            .then(m => m.LikedSongs),
+      },
+      {
+        path: 'playlists',
+        loadComponent: () =>
+          import('./features/user/playlists/playlists')
+            .then(m => m.Playlists),
+      },
+      {
+        path: 'playlists/:id',
+        loadComponent: () =>
+          import('./features/user/playlist-details/playlist-details')
+            .then(m => m.PlaylistDetails),
+      },
+
     ],
   },
   {

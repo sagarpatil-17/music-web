@@ -1,84 +1,136 @@
-
-<div class="min-h-screen bg-[#10110f] text-white">
+<div class="min-h-screen bg-[#10110f] pb-24 text-white">
 
   <!-- Mobile backdrop -->
-  @if (sidebarOpen) {
-    <button
-      type="button"
-      aria-label="Close navigation"
-      class="fixed inset-0 z-40 bg-black/70 md:hidden"
-      (click)="sidebarOpen = false">
-    </button>
+  @if (sidebarOpen()) {
+  <button type="button" aria-label="Close navigation" class="fixed inset-0 z-40 bg-black/70 md:hidden"
+    (click)="closeSidebar()">
+  </button>
   }
 
   <!-- Sidebar -->
-  <aside
-    class="fixed inset-y-0 left-0 z-50 flex w-64 flex-col
+  <aside class="fixed inset-y-0 bottom-24 left-0 z-50 flex w-64 flex-col
            border-r border-white/10 bg-[#10110f]
-           transition-transform duration-200 md:translate-x-0"
-    [class.-translate-x-full]="!sidebarOpen">
+           transition-transform duration-200 md:translate-x-0" [class.-translate-x-full]="!sidebarOpen()">
 
-    <a routerLink="/home"
-       class="flex h-20 items-center gap-3 border-b border-white/10 px-6">
-      <div class="flex h-10 w-10 items-center justify-center
-                  rounded-xl bg-lime-400 text-xl font-black text-black">
+    <!-- Logo -->
+    <a routerLink="/home" (click)="closeSidebar()"
+      class="flex h-20 shrink-0 items-center gap-3 border-b border-white/10 px-6">
+
+      <div class="flex h-10 w-10 items-center justify-center rounded-xl
+                  bg-lime-400 text-xl font-black text-black">
         ♪
       </div>
+
       <span class="text-xl font-bold tracking-tight">
         Fresh<span class="text-lime-400">Music</span>
       </span>
     </a>
 
-    <nav class="flex-1 space-y-2 px-4 py-6">
+    <!-- Sidebar navigation -->
+    <nav class="flex-1 space-y-2 overflow-y-auto px-4 py-6">
       <p class="mb-4 px-3 text-[10px] font-bold uppercase
                 tracking-[0.2em] text-neutral-600">
         Your Music
       </p>
 
-      <a routerLink="/home"
-         routerLinkActive="bg-lime-400/10 text-lime-400"
-         [routerLinkActiveOptions]="{ exact: true }"
-         (click)="sidebarOpen = false"
-         class="flex items-center gap-3 rounded-xl px-4 py-3
-                text-sm text-neutral-400 transition hover:bg-white/5">
-        <span class="text-lg">⌂</span>
+      <a routerLink="/home" routerLinkActive="bg-lime-400/10 text-lime-400" [routerLinkActiveOptions]="{ exact: true }"
+        (click)="closeSidebar()" class="flex items-center gap-3 rounded-xl px-4 py-3
+               text-sm text-neutral-400 transition hover:bg-white/5 hover:text-white">
+        <span class="w-5 text-center text-lg">⌂</span>
         Home
       </a>
-    </nav>
 
-    <div class="border-t border-white/10 p-4">
-      <button
-        type="button"
-        (click)="logout()"
-        class="flex w-full items-center gap-3 rounded-xl px-4 py-3
-               text-sm text-neutral-400 transition
-               hover:bg-red-500/10 hover:text-red-400">
-        <span class="text-lg">⇥</span>
-        Logout
-      </button>
-    </div>
+      <a routerLink="/home/liked-songs" routerLinkActive="bg-lime-400/10 text-lime-400" (click)="closeSidebar()" class="flex items-center gap-3 rounded-xl px-4 py-3
+               text-sm text-neutral-400 transition hover:bg-white/5 hover:text-white">
+        <span class="w-5 text-center text-lg">♥</span>
+        Liked Songs
+      </a>
+
+      <a routerLink="/home/playlists" routerLinkActive="bg-lime-400/10 text-lime-400" (click)="closeSidebar()" class="flex items-center gap-3 rounded-xl px-4 py-3
+               text-sm text-neutral-400 transition hover:bg-white/5 hover:text-white">
+        <span class="w-5 text-center text-lg">▤</span>
+        Playlists
+      </a>
+    </nav>
   </aside>
 
   <!-- Main content -->
   <div class="min-h-screen md:pl-64">
-    <header class="sticky top-0 z-30 flex h-16 items-center
-                   border-b border-white/10 bg-[#10110f]/90
-                   px-5 backdrop-blur-xl md:px-8">
-      <button
-        type="button"
-        class="mr-4 rounded-lg p-2 text-neutral-300 hover:bg-white/10 md:hidden"
-        aria-label="Open navigation"
-        (click)="sidebarOpen = !sidebarOpen">
-        ☰
-      </button>
 
-      <span class="text-sm text-neutral-400">
-        Your personal music space
-      </span>
+    <!-- Header -->
+    <header class="sticky top-0 z-30 flex h-16 items-center justify-between
+             border-b border-white/10 bg-[#10110f]/90
+             px-5 backdrop-blur-xl md:px-8">
+
+      <div class="flex min-w-0 items-center">
+        <button type="button" class="mr-4 rounded-lg p-2 text-neutral-300
+                 hover:bg-white/10 md:hidden" aria-label="Open navigation" (click)="sidebarOpen.set(true)">
+          ☰
+        </button>
+
+        <span class="truncate text-sm text-neutral-400">
+          Your personal music space
+        </span>
+      </div>
+
+      <!-- Profile dropdown -->
+      <div class="relative ml-4 shrink-0">
+
+        <button type="button" (click)="toggleProfileMenu()" [attr.aria-expanded]="profileMenuOpen()"
+          aria-label="Open profile menu" class="flex h-10 w-10 items-center justify-center overflow-hidden
+                 rounded-full border border-white/10 bg-[#24271f]
+                 font-bold text-lime-400 transition
+                 hover:border-lime-400/50 hover:bg-lime-400/10">
+          {{ user()?.name?.charAt(0)?.toUpperCase() || '♙' }}
+        </button>
+
+        @if (profileMenuOpen()) {
+        <!-- Click-away backdrop -->
+        <button type="button" aria-label="Close profile menu" class="fixed inset-0 z-40 cursor-default"
+          (click)="closeProfileMenu()">
+        </button>
+
+        <!-- Dropdown -->
+        <div class="absolute right-0 top-12 z-50 w-64 overflow-hidden
+                   rounded-2xl border border-white/10 bg-[#191c16]
+                   shadow-2xl shadow-black/40">
+
+          <!-- User information -->
+          <div class="border-b border-white/10 px-4 py-4">
+            <p class="truncate text-sm font-semibold text-white">
+              {{ user()?.name || 'Music listener' }}
+            </p>
+            <p class="mt-1 truncate text-xs text-neutral-400">
+              {{ user()?.email || '' }}
+            </p>
+          </div>
+
+          <div class="p-2">
+            <a routerLink="/home/profile" (click)="closeProfileMenu()" class="flex items-center gap-3 rounded-xl px-3 py-2.5
+                       text-sm text-neutral-300 transition
+                       hover:bg-white/5 hover:text-lime-400">
+              <span>♙</span>
+              Profile Settings
+            </a>
+
+            <button type="button" (click)="logout()" class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5
+                       text-left text-sm text-red-400 transition
+                       hover:bg-red-400/10">
+              <span>⇥</span>
+              Logout
+            </button>
+          </div>
+        </div>
+        }
+      </div>
     </header>
 
-    <main class="p-5 md:p-8">
+    <!-- Routed pages -->
+    <main class="p-5 pb-10 md:p-8">
       <router-outlet></router-outlet>
     </main>
   </div>
+
+  <!-- Persistent full-width player -->
+  <app-music-player />
 </div>

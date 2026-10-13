@@ -1,5 +1,9 @@
 
-export type SongStatus = 'DRAFT' | 'PUBLISHED' | 'UNPUBLISHED';
+export type SongStatus =
+  | 'DRAFT'
+  | 'PROCESSING'
+  | 'PUBLISHED'
+  | 'UNPUBLISHED';
 
 export interface AudioUploadResponse {
     audioPath: string;

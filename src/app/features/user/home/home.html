@@ -120,38 +120,197 @@
         <div class="grid grid-cols-2 gap-4 sm:grid-cols-3
                   lg:grid-cols-4 xl:grid-cols-5">
             @for (song of songs(); track song.id) {
-            <article class="group rounded-2xl border border-white/5
-                   bg-[#171815] p-3 transition duration-200
-                   hover:-translate-y-1 hover:border-lime-400/20
-                   hover:bg-[#1d1f1a]">
 
-                <div class="relative flex aspect-square items-center
-                        justify-center overflow-hidden rounded-xl
-                        bg-gradient-to-br from-[#303927] to-[#141510]">
+            <article class="group relative rounded-2xl border border-white/5
+           bg-[#171815] p-3 transition duration-200
+           hover:-translate-y-1 hover:border-lime-400/20
+           hover:bg-[#1d1f1a]">
+
+                <!-- Song artwork -->
+
+                <div class="relative flex aspect-square items-center justify-center
+           overflow-hidden rounded-xl
+           bg-gradient-to-br from-[#303927] to-[#141510]">
 
                     <span class="text-5xl text-lime-400/80">♫</span>
 
-                    <div class="absolute inset-0 flex items-center
-                          justify-center bg-black/50 opacity-0
-                          transition group-hover:opacity-100">
-                        <span class="flex h-12 w-12 items-center
-                             justify-center rounded-full bg-lime-400
-                             text-xl text-black shadow-xl">
+                    <!-- Add to Playlist: Top Right -->
+
+                    <button type="button" (click)="openPlaylistPicker(song)"
+                        [attr.aria-label]="'Add ' + song.title + ' to playlist'" title="Add to playlist" class="absolute right-2 top-2 z-20 flex h-9 w-9
+           items-center justify-center rounded-full
+           border border-white/10 bg-black/70
+           text-xl text-white shadow-lg transition
+           hover:scale-105 hover:bg-lime-400
+           hover:text-black">
+                        +
+                    </button>
+
+
+                    <!-- Like: Bottom Right -->
+                    <button type="button" (click)="toggleLike(song)" [disabled]="likingSongIds().has(song.id)"
+                        [attr.aria-label]="isLiked(song.id)
+            ? 'Unlike ' + song.title
+            : 'Like ' + song.title" title="Like song" class="absolute bottom-2 right-2 z-20 flex h-9 w-9
+               items-center justify-center rounded-full
+               border border-white/10 bg-black/70
+               text-xl shadow-lg transition
+               hover:scale-105 hover:bg-black
+               disabled:opacity-50" [class.text-red-400]="isLiked(song.id)" [class.text-white]="!isLiked(song.id)">
+
+                        {{ isLiked(song.id) ? '♥' : '♡' }}
+                    </button>
+
+                    <!-- Play Button -->
+                    <button type="button" [attr.aria-label]="'Play ' + song.title" (click)="playSong(song)" class="absolute inset-0 z-10 flex items-center
+               justify-center bg-black/40 opacity-0
+               transition group-hover:opacity-100
+               focus:opacity-100">
+
+                        <span class="flex h-12 w-12 items-center justify-center
+                   rounded-full bg-lime-400 text-xl text-black
+                   shadow-xl">
+
+                            @if (player.currentSong()?.id === song.id
+                            && player.isPlaying()) {
+                            Ⅱ
+                            } @else {
                             ▶
+                            }
                         </span>
-                    </div>
+                    </button>
                 </div>
 
+                <!-- Song details -->
                 <h3 class="mt-4 truncate text-sm font-semibold text-white">
                     {{ song.title }}
                 </h3>
 
                 <p class="mt-1 truncate text-xs text-neutral-500">
-                    Fresh Music
+                    {{ song.artists.length
+                    ? song.artists.join(', ')
+                    : 'Fresh Music' }}
                 </p>
             </article>
+
             }
         </div>
         }
     </section>
 </section>
+
+
+@if (selectedSongForPlaylist(); as selectedSong) {
+  <div
+    class="fixed inset-0 z-[100] flex items-center justify-center
+           bg-black/75 p-4 backdrop-blur-sm"
+    (click)="closePlaylistPicker()">
+
+    <section
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="playlist-title"
+      class="w-full max-w-md rounded-2xl border border-white/10
+             bg-[#191c16] p-6 shadow-2xl"
+      (click)="$event.stopPropagation()">
+
+      <!-- Header -->
+      <div class="mb-6 flex items-start justify-between">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.2em]
+                    text-lime-400">
+            YOUR LIBRARY
+          </p>
+
+          <h2 id="playlist-title"
+              class="mt-2 text-xl font-bold text-white">
+            Add to playlist
+          </h2>
+
+          <p class="mt-1 text-sm text-neutral-400">
+            {{ selectedSong.title }}
+          </p>
+        </div>
+
+        <button
+          type="button"
+          (click)="closePlaylistPicker()"
+          class="rounded-lg px-3 py-1 text-xl text-neutral-400
+                 hover:bg-white/10 hover:text-white"
+          aria-label="Close">
+          ×
+        </button>
+      </div>
+
+      <!-- Loading -->
+      @if (playlistsLoading()) {
+        <div class="space-y-3">
+          @for (item of [1, 2, 3]; track item) {
+            <div class="h-14 animate-pulse rounded-xl bg-white/5"></div>
+          }
+        </div>
+      }
+
+      <!-- No playlists -->
+      @else if (playlists().length === 0) {
+        <div class="rounded-xl border border-dashed border-white/10
+                    p-6 text-center">
+          <p class="text-sm text-neutral-300">
+            You haven't created any playlists yet.
+          </p>
+
+          <a
+            routerLink="/home/playlists"
+            (click)="closePlaylistPicker()"
+            class="mt-4 inline-block rounded-lg bg-lime-400
+                   px-4 py-2 text-sm font-bold text-black
+                   hover:bg-lime-300">
+            Create playlist
+          </a>
+        </div>
+      }
+
+      <!-- Playlist selection -->
+      @else {
+        <div class="max-h-72 space-y-2 overflow-y-auto">
+          @for (playlist of playlists(); track playlist.id) {
+            <button
+              type="button"
+              (click)="addSongToPlaylist(playlist)"
+              [disabled]="addingToPlaylist()"
+              class="flex w-full items-center justify-between
+                     rounded-xl border border-white/5
+                     bg-white/[0.03] p-4 text-left
+                     transition hover:border-lime-400/30
+                     hover:bg-lime-400/5
+                     disabled:opacity-50">
+
+              <div class="min-w-0">
+                <p class="truncate text-sm font-semibold text-white">
+                  {{ playlist.name }}
+                </p>
+
+                <p class="mt-1 text-xs text-neutral-500">
+                  {{ playlist.songs?.length ?? 0 }} songs
+                </p>
+              </div>
+
+              <span class="ml-3 text-xl text-lime-400">+</span>
+            </button>
+          }
+        </div>
+      }
+
+      <!-- Cancel -->
+      <button
+        type="button"
+        (click)="closePlaylistPicker()"
+        class="mt-5 w-full rounded-xl bg-white/5 px-4 py-3
+               text-sm font-semibold text-neutral-300
+               hover:bg-white/10 hover:text-white">
+        Cancel
+      </button>
+
+    </section>
+  </div>
+}
