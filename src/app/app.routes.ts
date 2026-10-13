@@ -22,6 +22,22 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'home',
+    // Add your user authentication guard here.
+    loadComponent: () =>
+      import('./features/user/user-layout/user-layout')
+        .then(m => m.UserLayout),
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        loadComponent: () =>
+          import('./features/user/home/home')
+            .then(m => m.Home),
+      },
+    ],
+  },
+  {
     path: 'admin',
     canActivate: [adminGuard],
     loadComponent: () =>
