@@ -75,4 +75,17 @@ export class SongService {
             `${this.baseUrl}/albums`
         );
     }
+
+    getPublishedSongs(search = ''): Observable<Song[]> {
+        let params = new HttpParams();
+
+        if (search.trim()) {
+            params = params.set('search', search.trim());
+        }
+
+        return this.http.get<Song[]>(
+            `${this.baseUrl}/songs`,
+            { params }
+        );
+    }
 }
