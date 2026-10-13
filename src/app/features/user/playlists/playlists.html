@@ -1,0 +1,112 @@
+
+<section class="mx-auto max-w-7xl space-y-8">
+
+  <!-- Header -->
+  <section class="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+    <div>
+      <p class="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-lime-400">
+        YOUR LIBRARY
+      </p>
+      <h1 class="text-3xl font-black sm:text-4xl">Your Playlists</h1>
+      <p class="mt-2 text-sm text-neutral-400">
+        Make a collection for every mood.
+      </p>
+    </div>
+
+    <button type="button"
+      (click)="showCreateForm.update(value => !value)"
+      class="rounded-xl bg-lime-400 px-5 py-3 text-sm font-bold text-black hover:bg-lime-300">
+      {{ showCreateForm() ? 'Cancel' : '+ Create playlist' }}
+    </button>
+  </section>
+
+  <!-- Create form -->
+  @if (showCreateForm()) {
+    <form (ngSubmit)="createPlaylist()"
+      class="space-y-4 rounded-2xl border border-white/10 bg-[#171815] p-5 sm:p-6">
+
+      <div>
+        <label for="playlistTitle" class="mb-2 block text-sm font-medium">
+          Playlist name
+        </label>
+        <input id="playlistTitle" name="name" required maxlength="80"
+          [(ngModel)]="name" placeholder="e.g. Late Night Vibes"
+          class="w-full rounded-xl border border-white/10 bg-[#10110f] px-4 py-3 text-sm outline-none focus:border-lime-400/60" />
+      </div>
+
+      <div>
+        <label for="playlistDescription" class="mb-2 block text-sm font-medium">
+          Description <span class="text-neutral-500">(optional)</span>
+        </label>
+        <textarea id="playlistDescription" name="description" rows="2"
+          maxlength="300" [(ngModel)]="description"
+          placeholder="What is this playlist about?"
+          class="w-full resize-y rounded-xl border border-white/10 bg-[#10110f] px-4 py-3 text-sm outline-none focus:border-lime-400/60"></textarea>
+      </div>
+
+      <button type="submit" [disabled]="saving() || !name.trim()"
+        class="rounded-xl bg-lime-400 px-5 py-3 text-sm font-bold text-black hover:bg-lime-300 disabled:opacity-50">
+        {{ saving() ? 'Creating...' : 'Create playlist' }}
+      </button>
+    </form>
+  }
+
+  @if (loading()) {
+    <div class="py-16 text-center text-sm text-neutral-400">
+      Loading playlists...
+    </div>
+  } @else if (errorMessage()) {
+    <div class="rounded-2xl border border-red-400/20 bg-red-400/5 p-6 text-center">
+      <p class="text-sm text-red-300">{{ errorMessage() }}</p>
+      <button type="button" (click)="loadPlaylists()"
+        class="mt-4 rounded-lg bg-white/10 px-4 py-2 text-sm">
+        Try again
+      </button>
+    </div>
+  } @else if (playlists().length === 0) {
+    <div class="rounded-2xl border border-dashed border-white/10 px-6 py-16 text-center">
+      <div class="mb-4 text-4xl text-neutral-600">♫</div>
+      <h2 class="font-semibold">No playlists yet</h2>
+      <p class="mt-2 text-sm text-neutral-500">
+        Create your first playlist to start collecting songs.
+      </p>
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      @for (playlist of playlists(); track playlist.id) {
+        <article class="group rounded-2xl border border-white/5 bg-[#171815] p-4 transition hover:border-lime-400/20 hover:bg-[#1d1f1a]">
+
+          <a [routerLink]="['/home/playlists', playlist.id]" class="block">
+            <div class="flex aspect-square items-center justify-center rounded-xl bg-gradient-to-br from-[#303927] to-[#141510] text-6xl text-lime-400/80">
+              ♫
+            </div>
+
+            <h2 class="mt-4 truncate text-base font-bold">
+              {{ playlist.name }}
+            </h2>
+
+            <p class="mt-1 line-clamp-2 min-h-10 text-sm text-neutral-500">
+              {{ playlist.description || 'Your personal collection' }}
+            </p>
+
+            <p class="mt-3 text-xs text-neutral-500">
+              {{ playlist.songs?.length ?? 0 }} songs
+            </p>
+          </a>
+
+          <div class="mt-4 flex items-center justify-between border-t border-white/5 pt-3">
+            <a [routerLink]="['/home/playlists', playlist.id]"
+              class="text-sm font-semibold text-lime-400 hover:text-lime-300">
+              Open playlist →
+            </a>
+
+            <button type="button" (click)="deletePlaylist(playlist)"
+              class="rounded-lg px-3 py-2 text-xs text-red-400 hover:bg-red-400/10">
+              Delete
+            </button>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>

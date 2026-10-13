@@ -142,4 +142,21 @@ export class AuthService {
 
     return 'Something went wrong. Please try again.';
   }
+
+  updateCachedUser(user: Partial<AuthUser>): void {
+    const currentUser = this.getUser();
+
+    if (!currentUser) {
+      return;
+    }
+
+    localStorage.setItem(
+      this.userKey,
+      JSON.stringify({
+        ...currentUser,
+        ...user,
+      })
+    );
+  }
+
 }

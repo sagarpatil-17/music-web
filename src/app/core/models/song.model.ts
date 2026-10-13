@@ -10,11 +10,11 @@ export interface Song {
   title: string;
   description?: string | null;
   artists: string[];
-  albumId?: string | null;
   audioPath: string;
-  status: SongStatus;
-  playCount: number;
+  albumId?: string | null;
+  album?: { id: string; title: string } | null;
   releaseDate?: string | null;
+  status: SongStatus;
   createdAt: string;
   updatedAt: string;
 }
