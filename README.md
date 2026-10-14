@@ -1,59 +1,107 @@
-# MusicWeb
+# Fresh Music — Web Application
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.2.
+A modern music streaming web application built with Angular and Tailwind CSS. Fresh Music provides a music discovery and listening experience with dedicated interfaces for users and administrators.
 
-## Development server
+## ✨ Features
 
-To start a local development server, run:
+- 🎵 Browse and discover published songs
+- ▶️ Music playback with a persistent player
+- 💿 Explore albums and album details
+- ❤️ Like and manage favorite songs
+- 📂 Create and manage playlists
+- 🕘 View listening history
+- 👤 User profile and authentication
+- 🛠️ Admin interface for managing songs and albums
+- 📱 Responsive interface for different screen sizes
+
+## 🛠️ Tech Stack
+
+- **Framework:** Angular 22
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS v4
+- **API Communication:** HTTP REST APIs
+- **Alerts:** SweetAlert2 through a custom alert service
+- **Audio Delivery:** Supabase signed URLs through the backend API
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js
+- npm
+- A running Fresh Music backend API
+
+### Installation
+
+```bash
+git clone https://github.com/sagarpatil-17/music_web.git
+cd music_web
+npm install
+```
+
+### Configuration
+
+Configure the backend API base URL using the environment configuration supported by your Angular application.
+
+Example:
+
+```typescript
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:3000',
+};
+```
+
+### Run the Application
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+### Build for Production
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## 🧭 Application Modules
 
-## Running unit tests
+### User
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+- Browse songs and albums
+- Play available music
+- Manage liked songs and playlists
+- Review listening history
+- Manage profile and authentication
 
-```bash
-ng test
-```
+### Admin
 
-## Running end-to-end tests
+- View the admin dashboard
+- Upload and manage songs
+- Associate songs with albums
+- Publish and unpublish songs
+- Create, update, and delete albums
 
-For end-to-end (e2e) testing, run:
+## 🔗 Backend Integration
 
-```bash
-ng e2e
-```
+The frontend communicates with the Fresh Music API for authentication, song and album data, playback URLs, playlists, likes, and listening history.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+The API URL, authentication handling, and authorization rules must match the backend configuration.
 
-## Additional Resources
+## 🔒 Security
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Protect user and admin routes.
+- Enforce authorization on the backend, not just in the frontend.
+- Do not expose Supabase service-role keys in browser code.
+- Handle API errors and expired playback URLs appropriately.
+
+## 👨‍💻 Author
+
+**Sagar Patil**
+
+- GitHub: [@sagarpatil-17](https://github.com/sagarpatil-17)
+- Backend: [music_api](https://github.com/sagarpatil-17/music_api)
+
+---
+
+Built with Angular and Tailwind CSS.
